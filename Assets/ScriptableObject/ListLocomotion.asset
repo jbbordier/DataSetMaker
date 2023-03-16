@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c064a9bea1c8a714e892e61e3cb3349f, type: 3}
+  m_Name: ListLocomotion
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 7400000, guid: a61bbb8d6f4924244a7b3ee06bfb100c, type: 2}
+  - {fileID: 7400000, guid: a6b6848e4825d7c4da3757a3d1b7750e, type: 2}
+  - {fileID: 7400000, guid: 86eb4562c40bd6741b62d2811b5be772, type: 2}
+  - {fileID: 7400000, guid: 5c69025fc987e7b47b0639a91ad7df59, type: 2}
+  - {fileID: 7400000, guid: f3f8503a60bb6894b8687454a52621fb, type: 2}
+  - {fileID: 7400000, guid: d720876a8ea459545bb24355648ea7db, type: 2}
+  - {fileID: 7400000, guid: ed1a1b64004067e4891fc916041fab66, type: 2}
+  - {fileID: 7400000, guid: bce17020403cd6743a4a8201cff90565, type: 2}
+  - {fileID: 7400000, guid: 977915e231a638a43a212718f8f104b8, type: 2}
+  - {fileID: 7400000, guid: 3e06a67b54b7b5741a5247bf00d2ecc1, type: 2}
+  - {fileID: 7400000, guid: ecbb4be83e9c3ae4aa3daa89b43ac7dd, type: 2}
+  - {fileID: 7400000, guid: 380ca11fd9ef7e14f860d59e648845b4, type: 2}
