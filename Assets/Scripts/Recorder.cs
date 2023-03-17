@@ -24,14 +24,13 @@ public class Recorder : MonoBehaviour
                 dataObject.LeftHandEuler = lEuler;
                 dataObject.RightHandEuler = rEuler;
                 dataObject.ExportToJson(folder);
-                dataObject.ExportToTensor(folder);
-                gameObject.GetComponent<GameManager>().ChangeClip();
+                gameObject.GetComponent<GameManager>().moveToNextClip();
             }
             else
             {
                 Debug.Log("Start recording");
 
-                dataObject = new DataSetObject(from, to, fromTransfrom, toTransfrom);
+                dataObject = new DataSetObject(to,toTransfrom);
                 leftHandPositions.Clear();
                 rightHandPositions.Clear();
                 leftHandRotations.Clear();
@@ -43,14 +42,13 @@ public class Recorder : MonoBehaviour
     public Transform leftHand;
     public Transform rightHand;
     private DataSetObject dataObject;
-    public AnimationClip from, to;// to be setup by game manager
+    public AnimationClip  to;// to be setup by game manager
     public string folder; // to be set up by game manager
 
     private List<Quaternion> leftHandRotations = new List<Quaternion>();
     private List<Quaternion> rightHandRotation = new List<Quaternion>();
     private List<Vector3> rightHandPositions = new List<Vector3>();
     private List<Vector3> leftHandPositions = new List<Vector3>();
-    public Transform fromTransfrom;//to be setup by gm
     public Transform toTransfrom;//same
 
     private void Start()

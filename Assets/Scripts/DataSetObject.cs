@@ -13,41 +13,38 @@ public class DataSetObject
     public List<Vector3> LeftHandPositions = new List<Vector3>();
     public List<Vector3> RightHandEuler = new List<Vector3>();
     public List<Vector3> RightHandPositions = new List<Vector3>();
-    public AnimationClip clipFrom;
     public AnimationClip clipTo;
-    public Transform transformFrom;
     public Transform transformTo;
 
 
     // animationDatas
-    private List<Quaternion> rotLocal = new List<Quaternion>();
-    private List<Quaternion> rotGlobal = new List<Quaternion>(); 
-    private List<Vector3> posLocal = new List<Vector3>();
-    private List<Vector3> posGlobal = new List<Vector3>(); 
+    private Dictionary<String, List<Vector3>> posLocal = new Dictionary<string, List<Vector3>>();
+    private Dictionary<String, List<Vector3>> posGlobal = new Dictionary<string, List<Vector3>>();
+    private Dictionary<String, List<Quaternion>> rotLocal = new Dictionary<string, List<Quaternion>>();
+    private Dictionary<String, List<Quaternion>> rotGlobal = new Dictionary<string, List<Quaternion>>();
 
 
 
-    public DataSetObject(AnimationClip from, AnimationClip to,Transform trFrom, Transform trTo)
+
+    public DataSetObject(AnimationClip to, Transform trTo)
     {
-        clipFrom = from;
         clipTo = to;
-        transformFrom = trFrom;
         transformTo = trTo;
     }
     public void ExportToJson(string folder)
     {
-        using (StreamWriter writer = new StreamWriter(folder+"/datasAnim.txt"))
+        using (StreamWriter writer = new StreamWriter(folder+"/datasAnim.txt",true))
         {
             //animations names from --> to
             writer.WriteLine("Animations :");
-            writer.WriteLine(clipFrom.name + " and " + clipTo.name);
+            writer.WriteLine(clipTo.name);
 
 
             //Quaternions
             writer.WriteLine("LeftHand quaternion :");
-            writeList<Quaternion>(writer, LeftHandQuaternions);
+            writeListOnly<Quaternion>(writer, LeftHandQuaternions);
             writer.WriteLine("RightHand quaternion :");
-            writeList<Quaternion>(writer, RightHandQuaternions);
+            writeListOnly<Quaternion>(writer, RightHandQuaternions);
             
             //Eulers
             /*
@@ -58,23 +55,10 @@ public class DataSetObject
 
             //Positions
             writer.WriteLine("LeftHand pos :");
-            writeList<Vector3>(writer, LeftHandPositions);
+            writeListOnly<Vector3>(writer, LeftHandPositions);
             writer.WriteLine("RightHand pos :");
-            writeList<Vector3>(writer, RightHandPositions);
+            writeListOnly<Vector3>(writer, RightHandPositions);
 
-            //From Anim rotations 
-            ExtractAnimationData(clipFrom, transformFrom);
-            writer.WriteLine("From animation Local Rotations : ");
-            writeList<Quaternion>(writer, rotLocal);
-            writer.WriteLine("From animation Global Rotations : ");
-            writeList<Quaternion>(writer, rotGlobal);
-
-
-            //From Anim positions
-            writer.WriteLine("From animation Local Positions : ");
-            writeList<Vector3>(writer, posLocal);
-            writer.WriteLine("From animation Global Positions : ");
-            writeList<Vector3>(writer, posGlobal);
 
             //To Anim rotations 
             ExtractAnimationData(clipTo, transformTo);
@@ -93,20 +77,30 @@ public class DataSetObject
         }
     }
 
-    internal void ExportToTensor(string folder)
-    {
-      
-    }
-
-    private void writeList<T>(StreamWriter writer, List<T> list)
+    private void writeList<T>(StreamWriter writer,Dictionary<String,List<T>> list)
     {
         foreach (var item in list)
         {
-            writer.Write(item.ToString() + ';');
+            writer.WriteLine(item.Key + " : " + ListTostring<T>(item.Value));
         }
         writer.WriteLine();
     }
 
+    private void writeListOnly<T>(StreamWriter writer, List<T> list)
+    {
+        foreach(var item in list)
+        {
+            writer.Write(item.ToString() + ";");
+        }
+        writer.WriteLine();
+    }
+
+    private string ListTostring<T>(List<T> list)
+    {
+        string r = "";
+        list.ForEach(w => r += w.ToString() + ";");
+        return r;
+    }
     private void ExtractAnimationData(AnimationClip animationClip,Transform targetTransform)
     {
         posGlobal.Clear();
@@ -115,7 +109,6 @@ public class DataSetObject
         rotLocal.Clear();
 
         Transform[] childs = targetTransform.GetComponentsInChildren<Transform>(true);
-        ExtractAnimPerTransform(animationClip, targetTransform);
         for(int i = 0; i < childs.Length; i++)
         {
             ExtractAnimPerTransform(animationClip, childs[i]);
@@ -129,6 +122,13 @@ public class DataSetObject
     {
         // Get the number of frames in the animation clip
         int frameCount = Mathf.RoundToInt(animationClip.length * animationClip.frameRate);
+
+        //to store the joint rotations and positions
+
+        List<Quaternion> rotG = new List<Quaternion>();
+        List<Quaternion> rotL = new List<Quaternion>();
+        List<Vector3> posG = new List<Vector3>();    
+        List<Vector3> posL = new List<Vector3>();    
 
         // Extract the position and rotation of each frame
         for (int i = 0; i < frameCount; i++)
@@ -153,17 +153,24 @@ public class DataSetObject
             Quaternion globalRotation = targetTransform.rotation;
 
             //Pos
-            posLocal.Add(localPosition);
-            posGlobal.Add(globalPosition);
+            posL.Add(localPosition);
+            posG.Add(globalPosition);
             //Rot
-            rotLocal.Add(localRotation);
-            rotGlobal.Add(globalRotation);
+            rotL.Add(localRotation);
+            rotG.Add(globalRotation);
             
 
             // Reset the position and rotation of the target object to their original values
             targetTransform.position = position;
             targetTransform.rotation = rotation;
         }
+        //pos
+        posGlobal.Add(targetTransform.name, posG);
+        posLocal.Add(targetTransform.name, posL);
+
+        //rot
+        rotGlobal.Add(targetTransform.name, rotG);
+        rotLocal.Add(targetTransform.name, rotL);
     }
 }
 
