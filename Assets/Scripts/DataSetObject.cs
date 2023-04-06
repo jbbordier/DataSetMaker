@@ -33,7 +33,7 @@ public class DataSetObject
     }
     public void ExportToJson(string folder)
     {
-        using (StreamWriter writer = new StreamWriter(folder+"/datasAnim.txt",true))
+        using (StreamWriter writer = new StreamWriter(folder + "/datasAnim.txt", true))
         {
             //animations names from --> to
             writer.WriteLine("Animations :");
@@ -45,7 +45,7 @@ public class DataSetObject
             writeListOnly<Quaternion>(writer, LeftHandQuaternions);
             writer.WriteLine("RightHand quaternion :");
             writeListOnly<Quaternion>(writer, RightHandQuaternions);
-            
+
             //Eulers
             /*
             writer.WriteLine("LeftHand euler :");
@@ -73,11 +73,11 @@ public class DataSetObject
             writeList<Vector3>(writer, posLocal);
             writer.WriteLine("To animation Global Positions : ");
             writeList<Vector3>(writer, posGlobal);
-
         }
+
     }
 
-    private void writeList<T>(StreamWriter writer,Dictionary<String,List<T>> list)
+    private void writeList<T>(StreamWriter writer, Dictionary<String, List<T>> list)
     {
         foreach (var item in list)
         {
@@ -88,7 +88,7 @@ public class DataSetObject
 
     private void writeListOnly<T>(StreamWriter writer, List<T> list)
     {
-        foreach(var item in list)
+        foreach (var item in list)
         {
             writer.Write(item.ToString() + ";");
         }
@@ -101,76 +101,78 @@ public class DataSetObject
         list.ForEach(w => r += w.ToString() + ";");
         return r;
     }
-    private void ExtractAnimationData(AnimationClip animationClip,Transform targetTransform)
+    public void ExtractAnimationData(AnimationClip animationClip, Transform targetTransform)
     {
         posGlobal.Clear();
         posLocal.Clear();
         rotGlobal.Clear();
         rotLocal.Clear();
-
+        // Get the number of frames in the animation clip
+        int frameCount = Mathf.RoundToInt(animationClip.length * animationClip.frameRate);
         Transform[] childs = targetTransform.GetComponentsInChildren<Transform>(true);
-        for(int i = 0; i < childs.Length; i++)
+        for (int i = 0; i < frameCount; i++)
         {
-            ExtractAnimPerTransform(animationClip, childs[i]);
+            float time = i / animationClip.frameRate;
+            // Sample the animation clip at the current time
+            animationClip.SampleAnimation(targetTransform.parent.gameObject, time);
+            for (int j = 0; j < childs.Length; j++)
+            {
+                ExtractAnimPerTransform(childs[j]);
+            }
         }
-        
+
     }
 
 
 
-    void ExtractAnimPerTransform(AnimationClip animationClip, Transform targetTransform)
+    void ExtractAnimPerTransform(Transform targetTransform)
     {
-        // Get the number of frames in the animation clip
-        int frameCount = Mathf.RoundToInt(animationClip.length * animationClip.frameRate);
-
-        //to store the joint rotations and positions
 
         List<Quaternion> rotG = new List<Quaternion>();
         List<Quaternion> rotL = new List<Quaternion>();
-        List<Vector3> posG = new List<Vector3>();    
-        List<Vector3> posL = new List<Vector3>();    
+        List<Vector3> posG = new List<Vector3>();
+        List<Vector3> posL = new List<Vector3>();
 
-        // Extract the position and rotation of each frame
-        for (int i = 0; i < frameCount; i++)
+        // Get the new position and rotation of the target object after the animation clip has been sampled
+
+        //Pos
+        Vector3 localPosition = targetTransform.localPosition;
+        Vector3 globalPosition = targetTransform.position;
+
+        //Rot
+        Quaternion localRotation = targetTransform.localRotation;
+        Quaternion globalRotation = targetTransform.rotation;
+        //to store the joint rotations and positions
+        if (!rotGlobal.TryGetValue(targetTransform.name, out rotG))
         {
-            float time = i / animationClip.frameRate;
-
-            // Get the position and rotation of the target object at the current frame
-            Vector3 position = targetTransform.position;
-            Quaternion rotation = targetTransform.rotation;
-
-            // Sample the animation clip at the current time
-            animationClip.SampleAnimation(targetTransform.gameObject, time);
-
-            // Get the new position and rotation of the target object after the animation clip has been sampled
-
-            //Pos
-            Vector3 localPosition = targetTransform.localPosition;
-            Vector3 globalPosition = targetTransform.position;
-
-            //Rot
-            Quaternion localRotation = targetTransform.localRotation; 
-            Quaternion globalRotation = targetTransform.rotation;
-
-            //Pos
-            posL.Add(localPosition);
-            posG.Add(globalPosition);
-            //Rot
-            rotL.Add(localRotation);
             rotG.Add(globalRotation);
-            
+            rotL.Add(localRotation);
 
-            // Reset the position and rotation of the target object to their original values
-            targetTransform.position = position;
-            targetTransform.rotation = rotation;
+            posG.Add(globalPosition);
+            posL.Add(localPosition);
+            //pos
+            posGlobal.Add(targetTransform.name, posG);
+            posLocal.Add(targetTransform.name, posL);
+
+            //rot
+            rotGlobal.Add(targetTransform.name, rotG);
+            rotLocal.Add(targetTransform.name, rotL);
         }
-        //pos
-        posGlobal.Add(targetTransform.name, posG);
-        posLocal.Add(targetTransform.name, posL);
+        else
+        {
+            rotGlobal.TryGetValue(targetTransform.name, out rotG);
+            rotLocal.TryGetValue(targetTransform.name, out rotL);
+            posGlobal.TryGetValue(targetTransform.name, out posG);
+            posLocal.TryGetValue(targetTransform.name, out posL);
 
-        //rot
-        rotGlobal.Add(targetTransform.name, rotG);
-        rotLocal.Add(targetTransform.name, rotL);
+            rotG.Add(globalRotation);
+            rotL.Add(localRotation);
+
+            posG.Add(globalPosition);
+            posL.Add(localPosition);
+
+        }
+
     }
 }
 

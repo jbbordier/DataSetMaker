@@ -55,8 +55,8 @@ public class Recorder : MonoBehaviour
     {
         leftHand = GameObject.Find("LeftController").transform;
         rightHand = GameObject.Find("RightController").transform;
-
     }
+
     // Update is called once per frame
     void FixedUpdate()
     {
