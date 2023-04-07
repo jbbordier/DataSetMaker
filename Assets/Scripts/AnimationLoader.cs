@@ -37,7 +37,6 @@ public class AnimationLoader : MonoBehaviour
             string[] line = lines.Split('\n');
             string[] newArray = new string[line.Length - 1];
             Array.Copy(line, 1, newArray, 0, newArray.Length);
-            Quaternion previous = Quaternion.identity;
             for (int a = 0; a < newArray.Length; a++)
             {
 
@@ -48,7 +47,7 @@ public class AnimationLoader : MonoBehaviour
                     AnimationCurve cZ = new AnimationCurve();
                     AnimationCurve cW = new AnimationCurve();
                     string[] splittedLine = newArray[a].Split(';');
-                    Debug.Log(splittedLine.Length);
+                   // Debug.Log(splittedLine.Length);
                     for (int j = 0; j < splittedLine.Length; j++)
                     {
                         try
@@ -62,23 +61,11 @@ public class AnimationLoader : MonoBehaviour
                                 float x = float.Parse(values[0].Replace("(", "").Replace(".", ","));
                                 float y = float.Parse(values[1].Replace(".", ","));
                                 float z = float.Parse(values[2].Replace(".", ","));
-                                float w = float.Parse(values[3].Replace(")", "").Replace(".", ","));
-                                Quaternion q;
-                                if(previous == Quaternion.identity)
-                                {
-                                    q = new Quaternion(x, y, z, w);
-                                    previous = q;
-                                }
-                                else
-                                {
-                                     q = new Quaternion(x, y, z, w) * Quaternion.Inverse(previous);
-                                    previous = new Quaternion(x, y, z, w);
-                                }
-                                
-                                cX.AddKey(new Keyframe((j + 1) / framerate, q.x));
-                                cY.AddKey(new Keyframe((j + 1) / framerate, q.y));
-                                cZ.AddKey(new Keyframe((j + 1) / framerate, q.z));
-                                cW.AddKey(new Keyframe((j + 1) / framerate, q.w));
+                                float w = float.Parse(values[3].Replace(")", "").Replace(".", ","));                              
+                                cX.AddKey(new Keyframe((j + 1) / framerate, x));
+                                cY.AddKey(new Keyframe((j + 1) / framerate, y));
+                                cZ.AddKey(new Keyframe((j + 1) / framerate, z));
+                                cW.AddKey(new Keyframe((j + 1) / framerate, w));
                             }
 
                         }
