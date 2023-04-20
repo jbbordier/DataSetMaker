@@ -72,3 +72,5 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 /Assets/Results/17032023_17_15_Copy
 /Assets/Results/17032023_17_15_Copy.meta
+/Assets/Dataset/AnimToLoad/1804/vae.pt
+/Assets/Dataset/AnimToLoad/1804/vae.pt.meta
