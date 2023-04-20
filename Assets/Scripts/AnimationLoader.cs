@@ -17,7 +17,9 @@ public class AnimationLoader : MonoBehaviour
     public AnimationClip left;
     public AnimationClip right;
 
-    private void Start()
+
+
+    public void Load()
     {
 
         ClearAnims();

@@ -31,13 +31,16 @@ public class DataSetObject
         clipTo = to;
         transformTo = trTo;
     }
-    public void ExportToJson(string folder)
+    public void ExportToJson(string folder, bool append = true)
     {
-        using (StreamWriter writer = new StreamWriter(folder + "/datasAnim.txt", true))
+        using (StreamWriter writer = new StreamWriter(folder + "/datasAnim.txt", append))
         {
             //animations names from --> to
             writer.WriteLine("Animations :");
-            writer.WriteLine(clipTo.name);
+            if (clipTo != null)
+                writer.WriteLine(clipTo.name);
+            else
+                writer.WriteLine("simulating");
 
 
             //Quaternions
@@ -59,20 +62,23 @@ public class DataSetObject
             writer.WriteLine("RightHand pos :");
             writeListOnly<Vector3>(writer, RightHandPositions);
 
+            if (transformTo != null)
+            {
 
-            //To Anim rotations 
-            ExtractAnimationData(clipTo, transformTo);
-            writer.WriteLine("To animation Local Rotations : ");
-            writeList<Quaternion>(writer, rotLocal);
-            writer.WriteLine("To animation Global Rotations : ");
-            writeList<Quaternion>(writer, rotGlobal);
+                //To Anim rotations 
+                ExtractAnimationData(clipTo, transformTo);
+                writer.WriteLine("To animation Local Rotations : ");
+                writeList<Quaternion>(writer, rotLocal);
+                writer.WriteLine("To animation Global Rotations : ");
+                writeList<Quaternion>(writer, rotGlobal);
 
 
-            //To Anim positions
-            writer.WriteLine("To animation Local Positions : ");
-            writeList<Vector3>(writer, posLocal);
-            writer.WriteLine("To animation Global Positions : ");
-            writeList<Vector3>(writer, posGlobal);
+                //To Anim positions
+                writer.WriteLine("To animation Local Positions : ");
+                writeList<Vector3>(writer, posLocal);
+                writer.WriteLine("To animation Global Positions : ");
+                writeList<Vector3>(writer, posGlobal);
+            }
         }
 
     }
