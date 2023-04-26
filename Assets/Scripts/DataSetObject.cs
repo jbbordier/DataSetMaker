@@ -121,6 +121,7 @@ public class DataSetObject
             float time = i / animationClip.frameRate;
             // Sample the animation clip at the current time
             animationClip.SampleAnimation(targetTransform.parent.gameObject, time);
+            ExtractAnimPerTransform(targetTransform.parent);
             for (int j = 0; j < childs.Length; j++)
             {
                 ExtractAnimPerTransform(childs[j]);
@@ -151,6 +152,7 @@ public class DataSetObject
         //to store the joint rotations and positions
         if (!rotGlobal.TryGetValue(targetTransform.name, out rotG))
         {
+            rotG = new List<Quaternion>();
             rotG.Add(globalRotation);
             rotL.Add(localRotation);
 

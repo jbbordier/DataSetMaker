@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ public class AnimationLoader : MonoBehaviour
     public string path;
     public AnimationClip clip;
     public Transform fbx;
-    public float framerate = 60;
+    public float framerate = 120f;
     public Transform leftHand;
     public Transform rightHand;
     public Transform root;
@@ -22,12 +23,36 @@ public class AnimationLoader : MonoBehaviour
     public void Load()
     {
 
+        // Get the current last write time of the file
+        DateTime lastWriteTime = File.GetLastWriteTime(path);
+
+        // Check if the file has been modified since the last time it was checked
+        if (lastWriteTime > DateTime.Now.AddSeconds(-1))
+        {
+            LoadWhenReady();
+        }
+        else
+        {
+
+            Thread.Sleep(500);
+            LoadWhenReady();
+
+        }
+
+    }
+
+    private void LoadWhenReady()
+    {
+
+        Animation anim = fbx.parent.GetComponent<Animation>();
         ClearAnims();
+
+
 
         ApplyToCharacter();
 
         //clip.frameRate = framerate;
-        Animation anim = fbx.parent.GetComponent<Animation>();
+
         anim.AddClip(clip, "loadedAnim");
         anim.Play("loadedAnim");
         anim = leftHand.GetComponent<Animation>();
@@ -40,16 +65,9 @@ public class AnimationLoader : MonoBehaviour
 
     void ClearAnims()
     {
-        Animation anim = fbx.parent.GetComponent<Animation>();
-        if (anim.GetClipCount() > 0)
-            anim.RemoveClip(clip);
+
         clip.ClearCurves();
-        anim = leftHand.GetComponent<Animation>();
-        if (anim.GetClipCount() > 0)
-            anim.RemoveClip(left);
-        anim = rightHand.GetComponent<Animation>();
-        if (anim.GetClipCount() > 0)
-            anim.RemoveClip(right);
+
 
         clip.legacy = true;
         left.legacy = true;
@@ -62,35 +80,132 @@ public class AnimationLoader : MonoBehaviour
     private void ApplyToCharacter()
     {
         Transform[] tr = fbx.GetComponentsInChildren<Transform>();
-        using (StreamReader reader = new StreamReader(path + "/Anim.txt"))
+        try
         {
-            Dictionary<EditorCurveBinding, AnimationCurve> bindings = new Dictionary<EditorCurveBinding, AnimationCurve>();
-            string lines = reader.ReadToEnd();
-            string[] line = lines.Split('\n');
-            string[] newArray = new string[line.Length - 5];
-            string[] hands = new string[4];
-            Array.Copy(line, line.Length - 4, hands, 0, hands.Length);
-            Array.Copy(line, 1, newArray, 0, newArray.Length);
-            for (int a = 0; a < newArray.Length; a++)
+            using (StreamReader reader = new StreamReader(path + "/Anim.txt"))
             {
+                Dictionary<EditorCurveBinding, AnimationCurve> bindings = new Dictionary<EditorCurveBinding, AnimationCurve>();
+                string lines = reader.ReadToEnd();
+                string[] line = lines.Split('\n');
 
-                if (newArray[a].Length > 1)
+                if (line.Length > 70)
                 {
-                    AnimationCurve cX = new AnimationCurve();
-                    AnimationCurve cY = new AnimationCurve();
-                    AnimationCurve cZ = new AnimationCurve();
-                    AnimationCurve cW = new AnimationCurve();
-                    string[] splittedLine = newArray[a].Split(';');
-                    Debug.Log(splittedLine.Length);
-                    for (int j = 0; j < splittedLine.Length; j++)
+                    string[] newArray = new string[line.Length - 5];
+                    string[] hands = new string[4];
+                    Array.Copy(line, line.Length - 4, hands, 0, hands.Length);
+                    Array.Copy(line, 1, newArray, 0, newArray.Length);
+                    for (int a = 0; a < newArray.Length; a++)
                     {
-                        try
+
+                        if (newArray[a].Length > 1)
+                        {
+                            AnimationCurve cX = new AnimationCurve();
+                            AnimationCurve cY = new AnimationCurve();
+                            AnimationCurve cZ = new AnimationCurve();
+                            AnimationCurve cW = new AnimationCurve();
+                            string[] splittedLine = newArray[a].Split(';');
+                            Debug.Log(splittedLine.Length);
+                            for (int j = 0; j < splittedLine.Length; j++)
+                            {
+                                try
+                                {
+
+                                    string[] values = splittedLine[j].Split("|");
+                                    if (values.Length > 1)
+                                    {
+
+
+                                        float x = float.Parse(values[0].Replace("(", "").Replace(".", ","));
+                                        float y = float.Parse(values[1].Replace(".", ","));
+                                        float z = float.Parse(values[2].Replace(".", ","));
+                                        float w = float.Parse(values[3].Replace(")", "").Replace(".", ","));
+                                        cX.AddKey(new Keyframe((j + 1) / framerate, x));
+                                        cY.AddKey(new Keyframe((j + 1) / framerate, y));
+                                        cZ.AddKey(new Keyframe((j + 1) / framerate, z));
+                                        cW.AddKey(new Keyframe((j + 1) / framerate, w));
+                                    }
+
+                                }
+                                catch (Exception e)
+                                {
+                                    Debug.Log(splittedLine + e.Message);
+                                }
+
+                            }
+                            AddCurveBindings(clip, tr[a], cX, cY, cZ, cW);
+                        }
+
+
+
+                    }
+                    for (int a = 1; a < hands.Length; a = a + 2)
+                    {
+                        AnimationCurve cX = new AnimationCurve();
+                        AnimationCurve cY = new AnimationCurve();
+                        AnimationCurve cZ = new AnimationCurve();
+                        AnimationCurve cW = new AnimationCurve();
+                        AnimationCurve cxPos = new AnimationCurve();
+                        AnimationCurve cyPos = new AnimationCurve();
+                        AnimationCurve czPos = new AnimationCurve();
+                        string[] splittedLine = hands[a].Split(';');
+                        for (int i = 0; i < splittedLine.Length; i++)
+                        {
+                            string[] posRot = splittedLine[i].Split('|');
+                            string[] pos = posRot[0].Split(',');
+                            if (pos.Length > 1)
+                            {
+                                float posx = float.Parse(pos[0].Replace("(", "").Replace(".", ","));
+                                float posy = float.Parse(pos[1].Replace(".", ","));
+                                float posz = float.Parse(pos[2].Replace(")", "").Replace(".", ","));
+                                string[] rot = posRot[1].Split(',');
+                                float x = float.Parse(rot[0].Replace("(", "").Replace(".", ","));
+                                float y = float.Parse(rot[1].Replace(".", ","));
+                                float z = float.Parse(rot[2].Replace(".", ","));
+                                float w = float.Parse(rot[3].Replace(")", "").Replace(".", ","));
+                                cX.AddKey(new Keyframe((i + 1) / framerate, x));
+                                cY.AddKey(new Keyframe((i + 1) / framerate, y));
+                                cZ.AddKey(new Keyframe((i + 1) / framerate, z));
+                                cW.AddKey(new Keyframe((i + 1) / framerate, w));
+                                cxPos.AddKey(new Keyframe((i + 1) / framerate, posx));
+                                cyPos.AddKey(new Keyframe((i + 1) / framerate, posy));
+                                czPos.AddKey(new Keyframe((i + 1) / framerate, posz));
+                            }
+
+                        }
+                        if (a == 1)
+                        {
+                            AddCurveBindings(left, leftHand, cX, cY, cZ, cW, cxPos, cyPos, czPos);
+                        }
+                        else
+                        {
+                            AddCurveBindings(right, rightHand, cX, cY, cZ, cW, cxPos, cyPos, czPos);
+                        }
+
+                    }
+                }
+                else
+                {
+                    string[] newArray = new string[line.Length - 1];
+                    Array.Copy(line, 1, newArray, 0, newArray.Length);
+                    //here i need to set the root rotation
+
+                    //here is to handle hips position and rotation. 
+                    if (newArray[1].Length > 1 && newArray[newArray.Length - 1].Length > 1)
+                    {
+                        AnimationCurve cX = new AnimationCurve();
+                        AnimationCurve cY = new AnimationCurve();
+                        AnimationCurve cZ = new AnimationCurve();
+                        AnimationCurve cW = new AnimationCurve();
+                        AnimationCurve cxPos = new AnimationCurve();
+                        AnimationCurve cyPos = new AnimationCurve();
+                        AnimationCurve czPos = new AnimationCurve();
+                        string[] splittedLine = newArray[1].Split(';');
+                        for (int j = 0; j < splittedLine.Length; j++)
                         {
 
                             string[] values = splittedLine[j].Split("|");
                             if (values.Length > 1)
                             {
-
 
                                 float x = float.Parse(values[0].Replace("(", "").Replace(".", ","));
                                 float y = float.Parse(values[1].Replace(".", ","));
@@ -102,73 +217,93 @@ public class AnimationLoader : MonoBehaviour
                                 cW.AddKey(new Keyframe((j + 1) / framerate, w));
                             }
 
+
                         }
-                        catch (Exception e)
+                        string[] pos = newArray[newArray.Length - 1].Split(";");
+                        for (int j = 0; j < pos.Length; j++)
                         {
-                            Debug.Log(splittedLine + e.Message);
+
+                            string[] values = pos[j].Split("|");
+                            if (values.Length > 1)
+                            {
+
+                                float x = float.Parse(values[0].Replace("(", "").Replace(".", ","));
+                                float y = float.Parse(values[1].Replace(".", ","));
+                                float z = float.Parse(values[2].Replace(")", "").Replace(".", ","));
+                                cxPos.AddKey(new Keyframe((j + 1) / framerate, x));
+                                cyPos.AddKey(new Keyframe((j + 1) / framerate, y));
+                                czPos.AddKey(new Keyframe((j + 1) / framerate, z));
+
+                            }
+                        }
+                        AddCurveBindings(clip, tr[0], cX, cY, cZ, cW, cxPos, cyPos, czPos);
+                    }
+                    //here is to handle the rest of the bones
+                    for (int a = 2; a < newArray.Length - 2; a++)//start to 2 because 0 is root rotation, 1 is hips rotation
+                    {
+
+                        if (newArray[a].Length > 1)
+                        {
+                            AnimationCurve cX = new AnimationCurve();
+                            AnimationCurve cY = new AnimationCurve();
+                            AnimationCurve cZ = new AnimationCurve();
+                            AnimationCurve cW = new AnimationCurve();
+                            string[] splittedLine = newArray[a].Split(';');
+                            Debug.Log(splittedLine.Length);
+                            for (int j = 0; j < splittedLine.Length; j++)
+                            {
+                                try
+                                {
+
+                                    string[] values = splittedLine[j].Split("|");
+                                    if (values.Length > 1)
+                                    {
+
+
+                                        float x = float.Parse(values[0].Replace("(", "").Replace(".", ","));
+                                        float y = float.Parse(values[1].Replace(".", ","));
+                                        float z = float.Parse(values[2].Replace(".", ","));
+                                        float w = float.Parse(values[3].Replace(")", "").Replace(".", ","));
+                                        cX.AddKey(new Keyframe((j + 1) / framerate, x));
+                                        cY.AddKey(new Keyframe((j + 1) / framerate, y));
+                                        cZ.AddKey(new Keyframe((j + 1) / framerate, z));
+                                        cW.AddKey(new Keyframe((j + 1) / framerate, w));
+                                    }
+
+                                }
+                                catch (Exception e)
+                                {
+                                    Debug.Log(splittedLine + e.Message);
+                                }
+
+                            }
+                            AddCurveBindings(clip, tr[a - 1], cX, cY, cZ, cW);
                         }
 
-                    }
-                    AddCurveBindings(clip, tr[a], cX, cY, cZ, cW);
-                }
 
-
-
-            }
-            for (int a = 1; a < hands.Length; a = a + 2)
-            {
-                AnimationCurve cX = new AnimationCurve();
-                AnimationCurve cY = new AnimationCurve();
-                AnimationCurve cZ = new AnimationCurve();
-                AnimationCurve cW = new AnimationCurve();
-                AnimationCurve cxPos = new AnimationCurve();
-                AnimationCurve cyPos = new AnimationCurve();
-                AnimationCurve czPos = new AnimationCurve();
-                string[] splittedLine = hands[a].Split(';');
-                for (int i = 0; i < splittedLine.Length; i++)
-                {
-                    string[] posRot = splittedLine[i].Split('|');
-                    string[] pos = posRot[0].Split(',');
-                    if (pos.Length > 1)
-                    {
-                        float posx = float.Parse(pos[0].Replace("(", "").Replace(".", ","));
-                        float posy = float.Parse(pos[1].Replace(".", ","));
-                        float posz = float.Parse(pos[2].Replace(")", "").Replace(".", ","));
-                        string[] rot = posRot[1].Split(',');
-                        float x = float.Parse(rot[0].Replace("(", "").Replace(".", ","));
-                        float y = float.Parse(rot[1].Replace(".", ","));
-                        float z = float.Parse(rot[2].Replace(".", ","));
-                        float w = float.Parse(rot[3].Replace(")", "").Replace(".", ","));
-                        cX.AddKey(new Keyframe((i + 1) / framerate, x));
-                        cY.AddKey(new Keyframe((i + 1) / framerate, y));
-                        cZ.AddKey(new Keyframe((i + 1) / framerate, z));
-                        cW.AddKey(new Keyframe((i + 1) / framerate, w));
-                        cxPos.AddKey(new Keyframe((i + 1) / framerate, posx));
-                        cyPos.AddKey(new Keyframe((i + 1) / framerate, posy));
-                        czPos.AddKey(new Keyframe((i + 1) / framerate, posz));
                     }
 
-                }
-                if (a == 1)
-                {
-                    AddCurveBindings(left, leftHand, cX, cY, cZ, cW, cxPos, cyPos, czPos);
-                }
-                else
-                {
-                    AddCurveBindings(right, rightHand, cX, cY, cZ, cW, cxPos, cyPos, czPos);
-                }
+                    string[] rot = newArray[0].Split(';');
+                    string[] first = rot[0].Split('|');
+                    float xi = float.Parse(first[0].Replace("(", "").Replace(".", ","));
+                    float yi = float.Parse(first[1].Replace(".", ","));
+                    float zi = float.Parse(first[2].Replace(".", ","));
+                    float wi = float.Parse(first[3].Replace(")", "").Replace(".", ","));
+                    tr[0].parent.rotation = new Quaternion(xi, yi, zi, wi);
 
+                }
             }
-
         }
+
+        catch { Debug.Log("Error on reading the file"); }
+
     }
 
     public void AddCurveBindings(AnimationClip clip, Transform go, AnimationCurve curveX, AnimationCurve curveY, AnimationCurve curveZ, AnimationCurve curveW, AnimationCurve curveXpos = null, AnimationCurve curveYpos = null, AnimationCurve curveZpos = null)
     {
         EditorCurveBinding binding = new EditorCurveBinding();
         binding.type = typeof(Transform);
-        if (curveXpos == null)
-            binding.path = AnimationUtility.CalculateTransformPath(go, root);
+        binding.path = AnimationUtility.CalculateTransformPath(go, root);
 
 
         binding.propertyName = "m_LocalRotation.x";

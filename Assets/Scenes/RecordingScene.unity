@@ -1036,7 +1036,7 @@ Animation:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 267576599}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Animation: {fileID: 0}
   m_Animations: []
@@ -1480,7 +1480,7 @@ MonoBehaviour:
   transformsFbx:
   - {fileID: 986323761}
   - {fileID: 267576601}
-  folder: 17032023_17_15 (Copy)
+  folder: 
 --- !u!114 &560663485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1515,6 +1515,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   path: 
   clip: {fileID: 0}
+  fbx: {fileID: 0}
+  framerate: 60
+  leftHand: {fileID: 0}
+  rightHand: {fileID: 0}
+  root: {fileID: 0}
+  left: {fileID: 0}
+  right: {fileID: 0}
 --- !u!1 &802802523
 GameObject:
   m_ObjectHideFlags: 0
