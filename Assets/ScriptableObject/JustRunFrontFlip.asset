@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: JustRunFrontFlip
   m_EditorClassIdentifier: 
   clips:
+  - {fileID: 7400000, guid: 679273ea57e3f994eacaf25b3e869a0f, type: 2}
+  - {fileID: 7400000, guid: 9ed39b99442038f4d99122d29297f4bb, type: 2}
   - {fileID: 7400000, guid: 678a6237653d2ae4fbafea418b22c99b, type: 2}

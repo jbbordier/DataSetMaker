@@ -65,7 +65,8 @@ public class GameManager : MonoBehaviour
         else
         {
             
-            float random = UnityEngine.Random.Range(0f, 360f);
+            float random = UnityEngine.Random.Range(0f, 180f);
+            to.transform.rotation = origin;
             to.transform.Rotate(Vector3.up, random);
             rotationNumber++;
             to.GetComponent<Animation>().Play(currentToClip.name);

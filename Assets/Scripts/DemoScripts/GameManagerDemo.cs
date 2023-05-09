@@ -21,13 +21,25 @@ public class GameManagerDemo : MonoBehaviour
     public float framerate = 60f;
     bool simulating = false;
     public bool web;
+    public bool recordTheMovementForTest;
+    public InputTest inputTest;
+    public bool realdata;
+
     public bool Recording
     {
         set
         {
             recording = value;
+
             if (!value)
             {
+                if (recordTheMovementForTest)
+                {
+                    inputTest.LeftRot = leftHandRotations;
+                    inputTest.RightRot = rightHandRotations;
+                    inputTest.LeftPos = leftHandPositions;
+                    inputTest.RightPos = rightHandPositions;
+                }
 
                 if (!simulating)
                 {
@@ -69,10 +81,15 @@ public class GameManagerDemo : MonoBehaviour
         HandsDataLoader handsLoader = gameObject.GetComponent<HandsDataLoader>();
         if (web)
             server.SendData(handsLoader.lRot, handsLoader.rRot, handsLoader.lPos, handsLoader.rPos);
-        else
+        else if(!realdata)
         {
             Tester tester = gameObject.GetComponent<Tester>();
             tester.writeFile(handsLoader.lRot, handsLoader.rRot, handsLoader.lPos, handsLoader.rPos);
+        }
+        else
+        {
+            Tester tester = gameObject.GetComponent<Tester>();
+            tester.writeFile(inputTest.LeftRot, inputTest.RightRot, inputTest.LeftPos, inputTest.RightPos);
         }
     }
     [ContextMenu("CloseServer")]
