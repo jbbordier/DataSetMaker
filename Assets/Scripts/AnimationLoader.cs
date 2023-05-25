@@ -14,14 +14,18 @@ public class AnimationLoader : MonoBehaviour
     public float framerate = 120f;
     public Transform leftHand;
     public Transform rightHand;
-    public Transform root;
+    private Transform root;
+    public Transform generatedRoot;
     public AnimationClip left;
     public AnimationClip right;
-
+    public Transform origin;
+    public AnimationClip clipOrigin;
+    public Transform rootOrigin;
 
 
     public void Load()
     {
+
 
         // Get the current last write time of the file
         DateTime lastWriteTime = File.GetLastWriteTime(path);
@@ -29,27 +33,25 @@ public class AnimationLoader : MonoBehaviour
         // Check if the file has been modified since the last time it was checked
         if (lastWriteTime > DateTime.Now.AddSeconds(-1))
         {
-            LoadWhenReady();
+            Thread.Sleep(500);
         }
         else
         {
-
-            Thread.Sleep(500);
-            LoadWhenReady();
+            LoadWhenReady(origin, path + "/AnimRef.txt", clipOrigin, rootOrigin);
+            LoadWhenReady(fbx, path + "/Anim.txt", clip, generatedRoot);
 
         }
-
     }
 
-    private void LoadWhenReady()
+    private void LoadWhenReady(Transform tr, String path, AnimationClip clip, Transform root)
     {
 
-        Animation anim = fbx.parent.GetComponent<Animation>();
+        Animation anim = tr.parent.GetComponent<Animation>();
         ClearAnims();
 
 
-
-        ApplyToCharacter();
+        clip.legacy = true;
+        ApplyToCharacter(tr, path, clip, root);
 
         //clip.frameRate = framerate;
 
@@ -77,18 +79,19 @@ public class AnimationLoader : MonoBehaviour
         right.ClearCurves();
         left.ClearCurves();
     }
-    private void ApplyToCharacter()
+    private void ApplyToCharacter(Transform tra, String path, AnimationClip clip, Transform root)
     {
-        Transform[] tr = fbx.GetComponentsInChildren<Transform>();
+        this.root = root;
+        Transform[] tr = tra.GetComponentsInChildren<Transform>();
         try
         {
-            using (StreamReader reader = new StreamReader(path + "/Anim.txt"))
+            using (StreamReader reader = new StreamReader(path))
             {
                 Dictionary<EditorCurveBinding, AnimationCurve> bindings = new Dictionary<EditorCurveBinding, AnimationCurve>();
                 string lines = reader.ReadToEnd();
                 string[] line = lines.Split('\n');
 
-                if (line.Length > 70)
+                if (line.Length > 72)
                 {
                     string[] newArray = new string[line.Length - 5];
                     string[] hands = new string[4];

@@ -98,11 +98,13 @@ public class GameManagerDemo : MonoBehaviour
         server.enabled = false;
     }
 
-    [ContextMenu("SimulateAnimation")]
+    [ContextMenu("SimulateAnimationGenerated")]
     public void SimulateAnimation()
     {
         gameObject.GetComponent<AnimationLoader>().Load();
     }
+
+
 
     // Update is called once per frame
     void FixedUpdate()

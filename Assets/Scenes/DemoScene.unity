@@ -137,17 +137,26 @@ Animation:
   m_GameObject: {fileID: 26917294}
   m_Enabled: 1
   serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: cb70a4743631ef24cafdd7d194dee284, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: cb70a4743631ef24cafdd7d194dee284, type: 2}
+  m_Animation: {fileID: 0}
+  m_Animations: []
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!4 &26917296 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8c21b46db69b64d4d9fcf218623ecbb6, type: 3}
+  m_PrefabInstance: {fileID: 191311541}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &79743191 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: 8c21b46db69b64d4d9fcf218623ecbb6, type: 3}
   m_PrefabInstance: {fileID: 267576598}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &112804591 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5465940246521907071, guid: 8c21b46db69b64d4d9fcf218623ecbb6, type: 3}
+  m_PrefabInstance: {fileID: 191311541}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &191311541
 PrefabInstance:
@@ -2422,7 +2431,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5e199cc60db52f4698473a845401fca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  path: Assets/Results/17032023_17_15_Copy/datasAnim.txt
+  path: 
   animIndex: 3
   lRot: []
   rRot: []
@@ -2456,12 +2465,15 @@ MonoBehaviour:
   path: Assets/Results/Tester
   clip: {fileID: 7400000, guid: 3a1ba90448a06ee48b863a7275ec8133, type: 2}
   fbx: {fileID: 267576602}
-  framerate: 120
+  framerate: 60
   leftHand: {fileID: 1370874677}
   rightHand: {fileID: 1370874677}
-  root: {fileID: 267576601}
+  generatedRoot: {fileID: 267576601}
   left: {fileID: 7400000, guid: 4462233a842531648bfaee4646bc31f0, type: 2}
   right: {fileID: 7400000, guid: 808627033f2529849930de4a712aa22d, type: 2}
+  origin: {fileID: 112804591}
+  clipOrigin: {fileID: 7400000, guid: fc30363ab9fe4fe49bba21ae731ae08e, type: 2}
+  rootOrigin: {fileID: 26917296}
 --- !u!1 &802802523
 GameObject:
   m_ObjectHideFlags: 0
