@@ -23,6 +23,7 @@ public class Recorder : MonoBehaviour
                 rightHandRotation.ForEach(x => rEuler.Add(x.eulerAngles));
                 dataObject.LeftHandEuler = lEuler;
                 dataObject.RightHandEuler = rEuler;
+                dataObject.VRRig = GameObject.Find("XR Origin").transform;
                 dataObject.ExportToJson(folder);
                 gameObject.GetComponent<GameManager>().moveToNextClip();
             }
@@ -63,12 +64,12 @@ public class Recorder : MonoBehaviour
         if (recording)
         {
             //position recording
-            rightHandPositions.Add(rightHand.position);
-            leftHandPositions.Add(leftHand.position);
+            rightHandPositions.Add(rightHand.parent.localPosition);
+            leftHandPositions.Add(leftHand.parent.localPosition);
 
             // rotation recording
-            rightHandRotation.Add(rightHand.rotation);
-            leftHandRotations.Add(leftHand.rotation);
+            rightHandRotation.Add(rightHand.parent.localRotation);
+            leftHandRotations.Add(leftHand.parent.localRotation);
         }
     }
 

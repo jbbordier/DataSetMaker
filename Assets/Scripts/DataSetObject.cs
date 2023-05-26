@@ -15,6 +15,7 @@ public class DataSetObject
     public List<Vector3> RightHandPositions = new List<Vector3>();
     public AnimationClip clipTo;
     public Transform transformTo;
+    public Transform VRRig;
 
 
     // animationDatas
@@ -144,11 +145,12 @@ public class DataSetObject
 
         //Pos
         Vector3 localPosition = targetTransform.localPosition;
-        Vector3 globalPosition = targetTransform.position;
+        var results = VRRig.worldToLocalMatrix * targetTransform.localToWorldMatrix;
+        Vector3 globalPosition = results.GetPosition();
 
         //Rot
         Quaternion localRotation = targetTransform.localRotation;
-        Quaternion globalRotation = targetTransform.rotation;
+        Quaternion globalRotation = results.rotation;
         //to store the joint rotations and positions
         if (!rotGlobal.TryGetValue(targetTransform.name, out rotG))
         {
