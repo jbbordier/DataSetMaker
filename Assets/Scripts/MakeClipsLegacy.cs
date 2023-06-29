@@ -12,6 +12,7 @@ public class MakeClipsLegacy : MonoBehaviour
         foreach (var item in clips)
         {
             item.legacy = true;
+            print(item.name+" Framerate :" + item.frameRate + " and length :" + item.length + "so :" + Mathf.RoundToInt(item.length * item.frameRate));
         }
     }
 

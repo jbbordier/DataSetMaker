@@ -188,12 +188,12 @@ public class AnimationLoader : MonoBehaviour
                 }
                 else
                 {
-                    string[] newArray = new string[line.Length - 1];
-                    Array.Copy(line, 1, newArray, 0, newArray.Length);
+                    string[] newArray = new string[line.Length];
+                    Array.Copy(line, 0, newArray, 0, newArray.Length);
                     //here i need to set the root rotation
 
                     //here is to handle hips position and rotation. 
-                    if (newArray[1].Length > 1 && newArray[newArray.Length - 1].Length > 1)
+                    if (newArray[0].Length > 1 && newArray[newArray.Length - 1].Length > 1)
                     {
                         AnimationCurve cX = new AnimationCurve();
                         AnimationCurve cY = new AnimationCurve();
@@ -202,7 +202,7 @@ public class AnimationLoader : MonoBehaviour
                         AnimationCurve cxPos = new AnimationCurve();
                         AnimationCurve cyPos = new AnimationCurve();
                         AnimationCurve czPos = new AnimationCurve();
-                        string[] splittedLine = newArray[1].Split(';');
+                        string[] splittedLine = newArray[0].Split(';');
                         for (int j = 0; j < splittedLine.Length; j++)
                         {
 
@@ -214,6 +214,7 @@ public class AnimationLoader : MonoBehaviour
                                 float y = float.Parse(values[1].Replace(".", ","));
                                 float z = float.Parse(values[2].Replace(".", ","));
                                 float w = float.Parse(values[3].Replace(")", "").Replace(".", ","));
+                                Debug.Log(new Quaternion(x,y,z,w).eulerAngles);
                                 cX.AddKey(new Keyframe((j + 1) / framerate, x));
                                 cY.AddKey(new Keyframe((j + 1) / framerate, y));
                                 cZ.AddKey(new Keyframe((j + 1) / framerate, z));
@@ -242,7 +243,7 @@ public class AnimationLoader : MonoBehaviour
                         AddCurveBindings(clip, tr[0], cX, cY, cZ, cW, cxPos, cyPos, czPos);
                     }
                     //here is to handle the rest of the bones
-                    for (int a = 2; a < newArray.Length - 2; a++)//start to 2 because 0 is root rotation, 1 is hips rotation
+                    for (int a = 1; a < newArray.Length - 1; a++)
                     {
 
                         if (newArray[a].Length > 1)
@@ -280,19 +281,19 @@ public class AnimationLoader : MonoBehaviour
                                 }
 
                             }
-                            AddCurveBindings(clip, tr[a - 1], cX, cY, cZ, cW);
+                            AddCurveBindings(clip, tr[a], cX, cY, cZ, cW);
                         }
 
 
                     }
 
-                    string[] rot = newArray[0].Split(';');
-                    string[] first = rot[0].Split('|');
-                    float xi = float.Parse(first[0].Replace("(", "").Replace(".", ","));
-                    float yi = float.Parse(first[1].Replace(".", ","));
-                    float zi = float.Parse(first[2].Replace(".", ","));
-                    float wi = float.Parse(first[3].Replace(")", "").Replace(".", ","));
-                    tr[0].parent.rotation = new Quaternion(xi, yi, zi, wi);
+                    //string[] rot = newArray[0].Split(';');
+                    //string[] first = rot[0].Split('|');
+                    //float xi = float.Parse(first[0].Replace("(", "").Replace(".", ","));
+                    //float yi = float.Parse(first[1].Replace(".", ","));
+                    //float zi = float.Parse(first[2].Replace(".", ","));
+                    //float wi = float.Parse(first[3].Replace(")", "").Replace(".", ","));
+                    //tr[0].parent.rotation = new Quaternion(xi, yi, zi, wi);
 
                 }
             }
