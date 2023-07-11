@@ -599,7 +599,7 @@ MonoBehaviour:
   guy: {fileID: 0}
   framerate: 30
   web: 0
-  recordTheMovementForTest: 0
+  recordTheMovementForTest: 1
   inputTest: {fileID: 11400000, guid: 93c3ab2b3c314ad448b9dbd2446368dc, type: 2}
   realdata: 1
 --- !u!114 &560663484

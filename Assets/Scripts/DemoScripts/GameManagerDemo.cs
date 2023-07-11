@@ -111,10 +111,10 @@ public class GameManagerDemo : MonoBehaviour
     {
         if (recording)
         {
-            leftHandPositions.Add(leftHand.position);
-            leftHandRotations.Add(leftHand.rotation);
-            rightHandPositions.Add(rightHand.position);
-            rightHandRotations.Add(rightHand.rotation);
+            leftHandPositions.Add(leftHand.parent.localPosition);
+            leftHandRotations.Add(leftHand.parent.localRotation);
+            rightHandPositions.Add(rightHand.parent.localPosition);
+            rightHandRotations.Add(rightHand.parent.localRotation);
         }
         if (server.hasReceiveData)
         {
