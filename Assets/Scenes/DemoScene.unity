@@ -626,12 +626,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5e199cc60db52f4698473a845401fca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  path: 
-  animIndex: 3
-  lRot: []
-  rRot: []
-  lPos: []
-  rPos: []
+  pathAnimTraining: C:\Users\jbordier\Documents\Python Scripts\VRGANimator/datasAnim.txt
+  pathAnimTesting: Assets/Results/Tester/datasAnim.txt
+  animName: 
+  lPivot: {fileID: 849833510}
+  rPivot: {fileID: 1370874676}
 --- !u!114 &560663486
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -78,19 +78,9 @@ public class GameManagerDemo : MonoBehaviour
     {
         simulating = true;
         Recording = false;
-        HandsDataLoader handsLoader = gameObject.GetComponent<HandsDataLoader>();
-        if (web)
-            server.SendData(handsLoader.lRot, handsLoader.rRot, handsLoader.lPos, handsLoader.rPos);
-        else if(!realdata)
-        {
-            Tester tester = gameObject.GetComponent<Tester>();
-            tester.writeFile(handsLoader.lRot, handsLoader.rRot, handsLoader.lPos, handsLoader.rPos);
-        }
-        else
-        {
-            Tester tester = gameObject.GetComponent<Tester>();
-            tester.writeFile(inputTest.LeftRot, inputTest.RightRot, inputTest.LeftPos, inputTest.RightPos);
-        }
+        Tester tester = gameObject.GetComponent<Tester>();
+        tester.writeFile(inputTest.LeftRot, inputTest.RightRot, inputTest.LeftPos, inputTest.RightPos);
+
     }
     [ContextMenu("CloseServer")]
     public void CloseServer()
