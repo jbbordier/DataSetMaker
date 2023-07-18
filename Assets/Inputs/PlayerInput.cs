@@ -51,6 +51,8 @@ public class PlayerInput : MonoBehaviour
         if (SceneManager.GetActiveScene().name.Contains("Demo"))
         {
             gameManagerDemo.SimulateAnimation();
+            HandsDataLoader loader = gameObject.GetComponent<HandsDataLoader>();
+            loader.LoadAnim();
         }
 
     }

@@ -11,25 +11,36 @@ public class HandsDataLoader : MonoBehaviour
     public string pathAnimTraining;
     public string pathAnimTesting = "Assets/Results/Tester/datasAnim.txt";
     public string animName;
-    public GameObject lPivot;
-    public GameObject rPivot;
+    public int animFromTraining;
+    GameObject trajHolder; 
 
     List<Quaternion> lRot = new List<Quaternion>();
     List<Quaternion> rRot = new List<Quaternion>();
     List<Vector3> lPos = new List<Vector3>();
     List<Vector3> rPos = new List<Vector3>();
 
+    private void Start()
+    {
+        trajHolder = GameObject.Find("TrajHolder");
+    }
+
     [ContextMenu("Load")]
     public void LoadAnim()
     {
-
+        
+        int num = trajHolder.transform.childCount;
+        while (num > 0)
+        {
+            DestroyImmediate(trajHolder.transform.GetChild(0).gameObject);
+            num--;
+        }
         List<Quaternion> lRot = new List<Quaternion>();
         List<Quaternion> rRot = new List<Quaternion>();
         List<Vector3> lPos = new List<Vector3>();
         List<Vector3> rPos = new List<Vector3>();
 
         getHandsPositionRotation(pathAnimTesting, "", lPos, rPos, lRot, rRot);
-        DrawHandTrajectory(lPos, rPos, lRot, rRot, new Color(255, 0, 0), new Color(100, 0, 0));
+        DrawHandTrajectory(lPos, rPos, lRot, rRot, new Color(255, 0, 0), new Color(25, 0, 0),"test trajectory");
 
         lRot = new List<Quaternion>();
         rRot = new List<Quaternion>();
@@ -37,7 +48,7 @@ public class HandsDataLoader : MonoBehaviour
         rPos = new List<Vector3>();
 
         getHandsPositionRotation(pathAnimTraining, animName, lPos, rPos, lRot, rRot);
-        DrawHandTrajectory(lPos, rPos, lRot, rRot, new Color(0, 255, 0), new Color(0, 100, 0));
+        DrawHandTrajectory(lPos, rPos, lRot, rRot, new Color(0, 255, 0), new Color(0, 25, 0), "train trajectory");
 
     }
 
@@ -73,30 +84,32 @@ public class HandsDataLoader : MonoBehaviour
                     quat = rightPos[j].Split(',');
                     rPos.Add(new Vector3(float.Parse(quat[0].Replace("(", "").Replace('.', ',')), float.Parse(quat[1].Replace('.', ',')), float.Parse(quat[2].Replace(")", "").Replace('.', ','))));
                 }
-                DrawHandTrajectory(lPos, rPos, lRot, rRot, colorL, colorR);
+                DrawHandTrajectory(lPos, rPos, lRot, rRot, colorL, colorR, "train trajectory");
             }
         }
     }
 
-    private void DrawHandTrajectory(List<Vector3> lPos, List<Vector3> rPos, List<Quaternion> lRot, List<Quaternion> rRot, Color lcolor, Color rcolor)
+    private void DrawHandTrajectory(List<Vector3> lPos, List<Vector3> rPos, List<Quaternion> lRot, List<Quaternion> rRot, Color lcolor, Color rcolor,string name)
     {
         GameObject lineL = new GameObject();
-        lineL.transform.parent = lPivot.transform;
+        lineL.transform.parent = trajHolder.transform;
         lineL.transform.position = Vector3.zero;
+        lineL.name = name;
         GameObject lineR = new GameObject();
-        lineR.transform.parent = rPivot.transform;
+        lineR.transform.parent = trajHolder.transform;
         lineR.transform.position = Vector3.zero;
+        lineR.name = name;
         LineRenderer lineRendererL = lineL.AddComponent<LineRenderer>();
         lineRendererL.useWorldSpace = false;
         lineRendererL.material = new Material(Shader.Find("Standard"));
-        lineRendererL.transform.parent = lPivot.transform;
+        lineRendererL.transform.parent = trajHolder.transform;
         lineRendererL.positionCount = lPos.Count;
         lineRendererL.startWidth = 0.05f;
         lineRendererL.endWidth = 0.05f;
         lineRendererL.material.color = lcolor;
         LineRenderer lineRendererR = lineR.AddComponent<LineRenderer>();
         lineRendererR.useWorldSpace = false;
-        lineRendererR.transform.parent = rPivot.transform;
+        lineRendererR.transform.parent = trajHolder.transform;
         lineRendererR.positionCount = rPos.Count;
         lineRendererR.startWidth = 0.05f;
         lineRendererR.endWidth = 0.05f;
@@ -112,26 +125,37 @@ public class HandsDataLoader : MonoBehaviour
     void getHandsPositionRotation(string path, string animName, List<Vector3> lposition, List<Vector3> rposition, List<Quaternion> lrotation, List<Quaternion> rrotation)
     {
 
-        using (StreamReader reader = new StreamReader(pathAnimTesting))
+        using (StreamReader reader = new StreamReader(path))
         {
             string content = reader.ReadToEnd();
             string[] anim = content.Split("Animations :");
-            int indexOfChosenAnim = 0;
+            int indexOfChosenAnim = 1;
+            int anim_with_name = 0;
             if (animName != "")
             {
                 for (int i = 0; i < anim.Length; i++)
                 {
-                    if (anim[i].Contains(animName))
-                    {
-                        indexOfChosenAnim = i;
-                    }
+                    var tab = anim[i].Split("\n");
+                    if(tab.Length > 1)
+                        if (anim[i].Split("\n")[1].Contains(animName))
+                        {
+                            if(anim_with_name == animFromTraining)
+                            {
+                                indexOfChosenAnim = i;
+                                break;
+                            }
+                            else
+                            {
+                                anim_with_name++;
+                            }
+                        }
                 }
             }
             string[] frame = anim[indexOfChosenAnim].Split("\n");
-            string[] leftQuat = frame[2].Split(';');
-            string[] rightQuat = frame[4].Split(';');
-            string[] leftPos = frame[6].Split(';');
-            string[] rightPos = frame[8].Split(';');
+            string[] leftQuat = frame[2+1].Split(';');
+            string[] rightQuat = frame[4+1].Split(';');
+            string[] leftPos = frame[6+ 1].Split(';');
+            string[] rightPos = frame[8 + 1].Split(';');
 
             for (int i = 0; i < leftQuat.Length - 1; i++)
             {
