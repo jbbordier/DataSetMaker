@@ -403,9 +403,12 @@ MonoBehaviour:
   framerate: 60
   leftHand: {fileID: 1673144073}
   rightHand: {fileID: 2127721024}
-  root: {fileID: 1581591253}
+  generatedRoot: {fileID: 0}
   left: {fileID: 7400000, guid: 4462233a842531648bfaee4646bc31f0, type: 2}
   right: {fileID: 7400000, guid: 808627033f2529849930de4a712aa22d, type: 2}
+  origin: {fileID: 0}
+  clipOrigin: {fileID: 0}
+  rootOrigin: {fileID: 0}
 --- !u!4 &1059286783
 Transform:
   m_ObjectHideFlags: 0
@@ -456,17 +459,13 @@ Animation:
   m_GameObject: {fileID: 1581591249}
   m_Enabled: 1
   serializedVersion: 3
-  m_Animation: {fileID: 0}
-  m_Animations: []
+  m_Animation: {fileID: 7400000, guid: fd65fd254cbf4e64a97ad093d1e45559, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: fd65fd254cbf4e64a97ad093d1e45559, type: 2}
   m_WrapMode: 0
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
---- !u!4 &1581591253 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fa8716d437c87bc4d84a69e6af3eb0e4, type: 3}
-  m_PrefabInstance: {fileID: 1051242340}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1673144068
 GameObject:
   m_ObjectHideFlags: 0

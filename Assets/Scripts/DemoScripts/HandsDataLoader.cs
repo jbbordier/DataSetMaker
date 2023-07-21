@@ -18,6 +18,7 @@ public class HandsDataLoader : MonoBehaviour
     List<Quaternion> rRot = new List<Quaternion>();
     List<Vector3> lPos = new List<Vector3>();
     List<Vector3> rPos = new List<Vector3>();
+    public int framenumber;
 
     private void Start()
     {
@@ -116,8 +117,32 @@ public class HandsDataLoader : MonoBehaviour
         lineRendererR.material.color = rcolor;
         for (int i = 0; i < lPos.Count; i++)
         {
-            lineRendererL.SetPosition(i, lPos[i]);
-            lineRendererR.SetPosition(i, rPos[i]);
+            if(i < lPos.Count)
+            {
+                lineRendererL.SetPosition(i, lPos[i]);
+                lineRendererR.SetPosition(i, rPos[i]);
+                if (i % 10 == 0)
+                {
+                    GameObject pos = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                    pos.transform.parent = lineL.transform;
+                    pos.transform.position = lPos[i];
+                    pos.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+                    pos.GetComponent<Renderer>().material.color = Color.black;
+                    pos.transform.localRotation = lRot[i];
+                    pos.transform.position = pos.transform.position + pos.transform.forward * 0.05f;
+                    pos.transform.Rotate(new Vector3(90, 0, 0));
+                    pos = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                    pos.transform.parent = lineR.transform;
+                    pos.transform.position = rPos[i];
+                    pos.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+                    pos.GetComponent<Renderer>().material.color = Color.gray;
+                    pos.transform.localRotation = rRot[i];
+                    pos.transform.position = pos.transform.position + pos.transform.forward * 0.05f;
+                    pos.transform.Rotate(new Vector3(90, 0, 0));
+
+                }
+            }
+            
         }
 
     }

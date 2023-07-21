@@ -630,6 +630,7 @@ MonoBehaviour:
   pathAnimTesting: Assets/Results/Tester/datasAnim.txt
   animName: Wall Run
   animFromTraining: 0
+  framenumber: 120
 --- !u!114 &560663486
 MonoBehaviour:
   m_ObjectHideFlags: 0
