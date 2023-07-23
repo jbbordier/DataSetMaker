@@ -13,6 +13,7 @@ public class MakeClipsLegacy : MonoBehaviour
         {
             item.legacy = true;
             print(item.name+" Framerate :" + item.frameRate + " and length :" + item.length + "so :" + Mathf.RoundToInt(item.length * item.frameRate));
+            item.wrapMode = WrapMode.Loop;
         }
     }
 

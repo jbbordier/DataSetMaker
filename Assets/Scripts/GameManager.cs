@@ -47,28 +47,40 @@ public class GameManager : MonoBehaviour
 
     public void moveToNextClip()
     {
-        if (rotationNumber >= 3)
+        //if (rotationNumber >= 3)
+        //{
+        //    if (currentToClip != null)
+        //        clipsDoneTo.Remove(currentToClip);
+        //    if (clipsDoneTo.Count > 0)
+        //    {
+        //        to.transform.rotation = origin;
+        //        currentToClip = clipsDoneTo[0];
+        //        transform.GetComponent<Recorder>().to = currentToClip;
+        //        currentToClip.legacy = true;
+        //        to.GetComponent<Animation>().AddClip(currentToClip, currentToClip.name);
+        //        to.GetComponent<Animation>().Play(currentToClip.name);
+        //    }
+        //    rotationNumber = 0;
+        //}
+        //else
+        //{
+
+        //    float random = UnityEngine.Random.Range(0f, 180f);
+        //    to.transform.rotation = origin;
+        //    to.transform.Rotate(Vector3.up, random);
+        //    rotationNumber++;
+        //    to.GetComponent<Animation>().Play(currentToClip.name);
+        //}
+
+        if (currentToClip != null)
+            clipsDoneTo.Remove(currentToClip);
+        if (clipsDoneTo.Count > 0)
         {
-            if (currentToClip != null)
-                clipsDoneTo.Remove(currentToClip);
-            if (clipsDoneTo.Count > 0)
-            {
-                to.transform.rotation = origin;
-                currentToClip = clipsDoneTo[0];
-                transform.GetComponent<Recorder>().to = currentToClip;
-                currentToClip.legacy = true;
-                to.GetComponent<Animation>().AddClip(currentToClip, currentToClip.name);
-                to.GetComponent<Animation>().Play(currentToClip.name);
-            }
-            rotationNumber = 0;
-        }
-        else
-        {
-            
-            float random = UnityEngine.Random.Range(0f, 180f);
             to.transform.rotation = origin;
-            to.transform.Rotate(Vector3.up, random);
-            rotationNumber++;
+            currentToClip = clipsDoneTo[0];
+            transform.GetComponent<Recorder>().to = currentToClip;
+            currentToClip.legacy = true;
+            to.GetComponent<Animation>().AddClip(currentToClip, currentToClip.name);
             to.GetComponent<Animation>().Play(currentToClip.name);
         }
     }
