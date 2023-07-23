@@ -724,7 +724,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   to: {fileID: 1692816475}
-  animList: {fileID: 11400000, guid: 697b97aa199d52a469d7df2d1c70efc0, type: 2}
+  animList: {fileID: 11400000, guid: e9228310a347d21459c7850f4f671e11, type: 2}
   transformsFbx:
   - {fileID: 1379824499}
   - {fileID: 1379824499}
