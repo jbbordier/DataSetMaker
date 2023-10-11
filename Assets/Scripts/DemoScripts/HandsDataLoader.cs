@@ -12,8 +12,8 @@ public class HandsDataLoader : MonoBehaviour
     public string pathAnimTesting = "Assets/Results/Tester/datasAnim.txt";
     public string animName;
     public int animFromTraining;
-    GameObject trajHolder; 
-
+    GameObject trajHolder;
+    GameObject plane;
     List<Quaternion> lRot = new List<Quaternion>();
     List<Quaternion> rRot = new List<Quaternion>();
     List<Vector3> lPos = new List<Vector3>();
@@ -23,6 +23,7 @@ public class HandsDataLoader : MonoBehaviour
     private void Start()
     {
         trajHolder = GameObject.Find("TrajHolder");
+        plane = GameObject.Find("Plane");
     }
 
     [ContextMenu("Load")]
@@ -50,6 +51,8 @@ public class HandsDataLoader : MonoBehaviour
 
         getHandsPositionRotation(pathAnimTraining, animName, lPos, rPos, lRot, rRot);
         DrawHandTrajectory(lPos, rPos, lRot, rRot, new Color(0, 255, 0), new Color(0, 25, 0), "train trajectory");
+
+        trajHolder.transform.parent = plane.transform;
 
     }
 

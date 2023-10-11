@@ -12,7 +12,10 @@ public class Recorder : MonoBehaviour
             recording = value;
             if (!value)
             {
-                gameObject.GetComponent<GameManager>().pauseAnimations();
+                GameManager gm = gameObject.GetComponent<GameManager>();
+                gm.pauseAnimations();
+                //MakeClipsLegacy makeClipsLegacy = gameObject.GetComponent<MakeClipsLegacy>();
+                //makeClipsLegacy.changeLength(gm.currentToClip, 1f);
                 dataObject.LeftHandQuaternions = leftHandRotations;
                 dataObject.LeftHandPositions = leftHandPositions;
                 dataObject.RightHandQuaternions = rightHandRotation;

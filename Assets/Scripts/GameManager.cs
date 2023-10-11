@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public string folder;
 
 
-    AnimationClip currentToClip;
+    public AnimationClip currentToClip;
     //each clip done for a specific from clip
     private List<AnimationClip> clipsDoneTo = new List<AnimationClip>();
 
@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
     private Dictionary<string, List<Quaternion>> rotGlobal = new Dictionary<string, List<Quaternion>>();
     private int rotationNumber;
     private Quaternion origin = Quaternion.identity;
+
+    private GameObject foottL;
+    private GameObject foottR;
     private void Awake()
     {
         if (folder != "")
@@ -32,11 +35,14 @@ public class GameManager : MonoBehaviour
             DirectoryInfo folder = Directory.CreateDirectory("Assets/Results/" + System.DateTime.Now.ToString("ddMMyyyy") + "_" + System.DateTime.Now.ToString("HH_m"));
             transform.GetComponent<Recorder>().folder = folder.FullName;
         }
+
+
         rotationNumber = 3;
         origin = to.transform.rotation;
         prepareAnimationClips();
         transform.GetComponent<Recorder>().toTransfrom = transformsFbx[1];
     }
+
 
 
     void prepareAnimationClips()

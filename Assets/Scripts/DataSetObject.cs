@@ -23,6 +23,8 @@ public class DataSetObject
     private Dictionary<String, List<Vector3>> posGlobal = new Dictionary<string, List<Vector3>>();
     private Dictionary<String, List<Quaternion>> rotLocal = new Dictionary<string, List<Quaternion>>();
     private Dictionary<String, List<Quaternion>> rotGlobal = new Dictionary<string, List<Quaternion>>();
+    private List<float> distanceL = new List<float>();
+    private List<float> distanceR = new List<float>();
 
 
 
@@ -79,6 +81,12 @@ public class DataSetObject
                 writeList<Vector3>(writer, posLocal);
                 writer.WriteLine("To animation Global Positions : ");
                 writeList<Vector3>(writer, posGlobal);
+
+                writer.WriteLine("To animation LeftFoot Distance : ");
+                writeListOnly<float>(writer, distanceL);
+
+                writer.WriteLine("To animation RightFoot Distance : ");
+                writeListOnly<float>(writer, distanceR);
             }
         }
 
@@ -114,6 +122,8 @@ public class DataSetObject
         posLocal.Clear();
         rotGlobal.Clear();
         rotLocal.Clear();
+        distanceL.Clear();
+        distanceR.Clear();
         // Get the number of frames in the animation clip
         int frameCount = Mathf.RoundToInt(animationClip.length * animationClip.frameRate);
         Transform[] childs = targetTransform.GetComponentsInChildren<Transform>(true);
@@ -123,6 +133,22 @@ public class DataSetObject
             // Sample the animation clip at the current time
             animationClip.SampleAnimation(targetTransform.parent.gameObject, time);
             ExtractAnimPerTransform(targetTransform.parent);
+            GameObject foottR = GameObject.Find("mixamorig:RightFoot");
+            GameObject foottL = GameObject.Find("mixamorig:RightFoot");
+
+            float dist = 0f;
+
+            if(Physics.Raycast(foottR.transform.position,Vector3.down,out RaycastHit hitR))
+            {
+                dist = hitR.distance;
+                distanceL.Add(dist);
+            }
+            if (Physics.Raycast(foottL.transform.position, Vector3.down, out RaycastHit hitL))
+            {
+                dist = hitL.distance;
+                distanceR.Add(dist);
+            }
+
             for (int j = 0; j < childs.Length; j++)
             {
                 ExtractAnimPerTransform(childs[j]);
