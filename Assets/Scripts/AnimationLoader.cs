@@ -1,3 +1,4 @@
+using cakeslice;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,12 +22,14 @@ public class AnimationLoader : MonoBehaviour
     public Transform origin;
     public AnimationClip clipOrigin;
     public Transform rootOrigin;
+    private Outline outline;
 
+    public string transformToApply;
 
     public void Load()
     {
 
-
+      
         // Get the current last write time of the file
         DateTime lastWriteTime = File.GetLastWriteTime(path);
 
@@ -37,8 +40,21 @@ public class AnimationLoader : MonoBehaviour
         }
         else
         {
-            LoadWhenReady(origin, path + "/AnimRef.txt", clipOrigin, rootOrigin);
-            LoadWhenReady(fbx, path + "/Anim.txt", clip, generatedRoot);
+            if (transformToApply == "To")
+            {
+                LoadWhenReady(fbx, path + "/Anim.txt", clip, generatedRoot);
+            }
+            else if (transformToApply =="Origin")
+            {
+                LoadWhenReady(origin, path + "/AnimRef.txt", clipOrigin, rootOrigin);
+            }
+            else
+            {
+                LoadWhenReady(origin, path + "/AnimRef.txt", clipOrigin, rootOrigin);
+                LoadWhenReady(fbx, path + "/Anim.txt", clip, generatedRoot);
+
+            }
+
 
         }
     }
@@ -54,8 +70,8 @@ public class AnimationLoader : MonoBehaviour
         ApplyToCharacter(tr, path, clip, root);
 
         //clip.frameRate = framerate;
-
         anim.AddClip(clip, "loadedAnim");
+        anim["loadedAnim"].time = 0f;
         anim.Play("loadedAnim");
         anim = leftHand.GetComponent<Animation>();
         anim.AddClip(left, "loadedAnim");
@@ -214,7 +230,7 @@ public class AnimationLoader : MonoBehaviour
                                 float y = float.Parse(values[1].Replace(".", ","));
                                 float z = float.Parse(values[2].Replace(".", ","));
                                 float w = float.Parse(values[3].Replace(")", "").Replace(".", ","));
-                                Debug.Log(new Quaternion(x,y,z,w).eulerAngles);
+                                Debug.Log(new Quaternion(x, y, z, w).eulerAngles);
                                 cX.AddKey(new Keyframe((j + 1) / framerate, x));
                                 cY.AddKey(new Keyframe((j + 1) / framerate, y));
                                 cZ.AddKey(new Keyframe((j + 1) / framerate, z));

@@ -7,11 +7,13 @@ public class MakeClipsLegacy : MonoBehaviour
 {
 
 
-    public AnimationList clipsList;
+    private AnimationList clipsList;
     public float clipLength = 2f;
     // Start is called before the first frame update
     void Start()
     {
+
+        clipsList = GetComponent<GameManager>().animList;
         foreach (var item in clipsList.clips)
         {
             item.legacy = true;
@@ -26,7 +28,7 @@ public class MakeClipsLegacy : MonoBehaviour
 
     public void changeLength(AnimationClip animClip, float time)
     {
-        time = Random.Range(2f, 4.5f);
+        time = Random.Range(1.5f, 5.5f);
         float newFrameRate = time / animClip.length;
         // Scale keyframe positions.
         int max = 0;
