@@ -724,7 +724,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   to: {fileID: 1692816475}
-  animList: {fileID: 11400000, guid: 6d5545493ef37c347874c460df13abdd, type: 2}
+  animList: {fileID: 11400000, guid: e9228310a347d21459c7850f4f671e11, type: 2}
   transformsFbx:
   - {fileID: 1379824499}
   - {fileID: 1379824499}
@@ -742,7 +742,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9c3fc0b3b600e147a96dad2e5e3810a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clipsList: {fileID: 11400000, guid: 6d5545493ef37c347874c460df13abdd, type: 2}
   clipLength: 3
 --- !u!114 &560663486
 MonoBehaviour:
@@ -768,6 +767,7 @@ MonoBehaviour:
   origin: {fileID: 0}
   clipOrigin: {fileID: 0}
   rootOrigin: {fileID: 0}
+  transformToApply: 
 --- !u!1 &802802523
 GameObject:
   m_ObjectHideFlags: 0

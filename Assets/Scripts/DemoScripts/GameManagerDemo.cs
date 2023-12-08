@@ -92,6 +92,15 @@ public class GameManagerDemo : MonoBehaviour
     public void SimulateAnimation()
     {
         gameObject.GetComponent<AnimationLoader>().Load();
+        GameObject to = GameObject.Find("To");
+        GameObject origin = GameObject.Find("Origin");
+        Animation animTo = to.transform.GetComponent<Animation>();
+        Animation animOrigin = origin.transform.GetComponent<Animation>();
+        animTo.Stop();
+        animOrigin.Stop();
+        animTo.Play("loadedAnim");
+        animOrigin.Play("loadedAnim");
+
     }
 
 

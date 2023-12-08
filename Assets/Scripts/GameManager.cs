@@ -96,6 +96,12 @@ public class GameManager : MonoBehaviour
         to.GetComponent<Animation>().Stop();
     }
 
+    public void RestartAnim()
+    {
+        pauseAnimations();
+        to.GetComponent<Animation>().Play(currentToClip.name);
+    }
+
     [ContextMenu("Rewrite")]
     public void RewriteAnim()
     {

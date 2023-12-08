@@ -54,6 +54,11 @@ public class PlayerInput : MonoBehaviour
             HandsDataLoader loader = gameObject.GetComponent<HandsDataLoader>();
             loader.LoadAnim();
         }
+        else
+        {
+            GameManager gameManager = transform.GetComponent<GameManager>();
+            gameManager.RestartAnim();
+        }
 
     }
 }
