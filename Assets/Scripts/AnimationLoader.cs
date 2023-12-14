@@ -24,6 +24,10 @@ public class AnimationLoader : MonoBehaviour
     public Transform rootOrigin;
     private Outline outline;
 
+    public Transform GT;
+    public AnimationClip clipGT;
+    public Transform rootGT;
+
     public string transformToApply;
 
     public void Load()
@@ -52,7 +56,7 @@ public class AnimationLoader : MonoBehaviour
             {
                 LoadWhenReady(origin, path + "/AnimRef.txt", clipOrigin, rootOrigin);
                 LoadWhenReady(fbx, path + "/Anim.txt", clip, generatedRoot);
-
+                LoadWhenReady(GT, path + "/AnimGT.txt", clipGT, rootGT);
             }
 
 
@@ -94,6 +98,7 @@ public class AnimationLoader : MonoBehaviour
         clip.ClearCurves();
         right.ClearCurves();
         left.ClearCurves();
+        clipGT.ClearCurves();
     }
     private void ApplyToCharacter(Transform tra, String path, AnimationClip clip, Transform root)
     {

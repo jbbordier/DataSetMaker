@@ -24,7 +24,7 @@ public class GameManagerDemo : MonoBehaviour
     public bool recordTheMovementForTest;
     public InputTest inputTest;
     public bool realdata;
-
+    public int animTime;
     public bool Recording
     {
         set
@@ -94,14 +94,19 @@ public class GameManagerDemo : MonoBehaviour
         gameObject.GetComponent<AnimationLoader>().Load();
         GameObject to = GameObject.Find("To");
         GameObject origin = GameObject.Find("Origin");
+        GameObject GT = GameObject.Find("GT");
         Animation animTo = to.transform.GetComponent<Animation>();
         Animation animOrigin = origin.transform.GetComponent<Animation>();
+        Animation animGT = GT.transform.GetComponent<Animation>();
         animTo.Stop();
         animOrigin.Stop();
+        animGT.Stop();
         animTo.Play("loadedAnim");
         animOrigin.Play("loadedAnim");
+        animGT.Play("loadedAnim");
 
     }
+
 
 
 
