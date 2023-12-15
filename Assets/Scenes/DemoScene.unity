@@ -135,7 +135,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8581092}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aac7dae040b13264085c0dd919413548, type: 3}
   m_Name: 
@@ -621,7 +621,7 @@ GameObject:
   - component: {fileID: 560663480}
   - component: {fileID: 560663482}
   - component: {fileID: 560663483}
-  - component: {fileID: 560663484}
+  - component: {fileID: 560663488}
   - component: {fileID: 560663485}
   - component: {fileID: 560663486}
   - component: {fileID: 560663487}
@@ -972,22 +972,10 @@ MonoBehaviour:
   clip: {fileID: 7400000, guid: 3a1ba90448a06ee48b863a7275ec8133, type: 2}
   guy: {fileID: 0}
   framerate: 30
-  web: 0
   recordTheMovementForTest: 1
   inputTest: {fileID: 11400000, guid: 93c3ab2b3c314ad448b9dbd2446368dc, type: 2}
   realdata: 1
---- !u!114 &560663484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 560663479}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bf4fd0b568e84f4fa3eccf649642680, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  animTime: 0
 --- !u!114 &560663485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1046,6 +1034,22 @@ MonoBehaviour:
   clipGT: {fileID: 7400000, guid: b169f84aa27dd7b4a94ae5a1412eb596, type: 2}
   rootGT: {fileID: 1467107247}
   transformToApply: 
+--- !u!114 &560663488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 560663479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17c5494ab87d36e4994b71940f0faaac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  path: Assets/Results/Tester
+  origin: {fileID: 2131771423}
+  GT: {fileID: 1073799734}
+  to: {fileID: 369014066}
 --- !u!1 &662776895 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -9200210366883936642, guid: 15c6dd02f19f9e441ba38ad385986e09, type: 3}

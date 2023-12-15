@@ -15,8 +15,7 @@ public class PositionsLoader : MonoBehaviour
     public Transform GT;
     public Transform to;
 
-
-    public string transformToApply;
+    private bool play = false;
     private int targetFrame = 0;
     private int current_frame = 0;
     public Dictionary<int, List<Vector3>> positionsTo = new Dictionary<int, List<Vector3>>();
@@ -32,6 +31,7 @@ public class PositionsLoader : MonoBehaviour
         ExtractPos(path + "/AnimGTPos.txt", positionsGT);
         ExtractPos(path + "/AnimRefPos.txt", positionsOrigin);
         ExtractPos(path + "/AnimPos.txt", positionsTo);
+        play = true;
 
     }
 
@@ -55,7 +55,6 @@ public class PositionsLoader : MonoBehaviour
                     {
                         List<Vector3> list = new List<Vector3>();
                         string[] splittedLine = newArray[a].Split(';');
-                        Debug.Log(splittedLine.Length);
                         targetFrame = splittedLine.Length;
                         for (int j = 0; j < splittedLine.Length; j++)
                         {
@@ -69,7 +68,7 @@ public class PositionsLoader : MonoBehaviour
 
                                     float x = float.Parse(values[0].Replace("(", "").Replace(".", ","));
                                     float y = float.Parse(values[1].Replace(".", ","));
-                                    float z = float.Parse(values[3].Replace(")", "").Replace(".", ","));
+                                    float z = float.Parse(values[2].Replace(")", "").Replace(".", ","));
                                     list.Add(new Vector3(x, y, z));
 
                                 }
@@ -95,23 +94,26 @@ public class PositionsLoader : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (current_frame > targetFrame)
+        if (play)
         {
-            current_frame = 0;
+            if (current_frame >= targetFrame-1)
+            {
+                current_frame = 0;
+            }
+            else
+            {
+                PlayAnim(GT, positionsGT);
+                PlayAnim(to, positionsTo);
+                PlayAnim(origin, positionsOrigin);
+                current_frame++;
+            }
         }
-        else
-        {
-            PlayAnim(GT, positionsGT);
-            PlayAnim(to, positionsTo);
-            PlayAnim(origin, positionsOrigin);
-            current_frame++;
-        }
+
     }
 
     private void PlayAnim(Transform tr, Dictionary<int, List<Vector3>> pos)
     {
-        tr.position = pos[0][current_frame];
-        int i = 1;
+        int i = 0;
         Transform[] transforms = tr.GetComponentsInChildren<Transform>();
         foreach (Transform t in transforms)
         {

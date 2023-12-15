@@ -16,11 +16,9 @@ public class GameManagerDemo : MonoBehaviour
     private List<Vector3> leftHandPositions = new List<Vector3>();
     public AnimationClip clip;
     private bool recording;
-    Server server;
     public GameObject guy;
     public float framerate = 60f;
     bool simulating = false;
-    public bool web;
     public bool recordTheMovementForTest;
     public InputTest inputTest;
     public bool realdata;
@@ -43,16 +41,10 @@ public class GameManagerDemo : MonoBehaviour
 
                 if (!simulating)
                 {
-                    if (web)
-                    {
-                        server.enabled = true;
-                        server.SendData(leftHandRotations, rightHandRotations, leftHandPositions, rightHandPositions);
-                    }
-                    else
-                    {
-                        Tester tester = gameObject.GetComponent<Tester>();
-                        tester.writeFile(leftHandRotations, rightHandRotations, leftHandPositions, rightHandPositions);
-                    }
+
+                    Tester tester = gameObject.GetComponent<Tester>();
+                    tester.writeFile(leftHandRotations, rightHandRotations, leftHandPositions, rightHandPositions);
+
                 }
             }
             else
@@ -71,7 +63,6 @@ public class GameManagerDemo : MonoBehaviour
     {
         leftHand = GameObject.Find("LeftController").transform;
         rightHand = GameObject.Find("RightController").transform;
-        server = gameObject.GetComponent<Server>();
     }
     [ContextMenu("SimulateRecording")]
     public void SimulateRecording()
@@ -82,12 +73,6 @@ public class GameManagerDemo : MonoBehaviour
         tester.writeFile(inputTest.LeftRot, inputTest.RightRot, inputTest.LeftPos, inputTest.RightPos);
 
     }
-    [ContextMenu("CloseServer")]
-    public void CloseServer()
-    {
-        server.enabled = false;
-    }
-
     [ContextMenu("SimulateAnimationGenerated")]
     public void SimulateAnimation()
     {
@@ -120,10 +105,7 @@ public class GameManagerDemo : MonoBehaviour
             rightHandPositions.Add(rightHand.parent.localPosition);
             rightHandRotations.Add(rightHand.parent.localRotation);
         }
-        if (server.hasReceiveData)
-        {
-            server.enabled = false;
-        }
+
     }
 
     // i want this fuction to modify the animationClip clip with the data from the server. First it need to convert the data to a dictionnary and then modify each animationCurve for each joints

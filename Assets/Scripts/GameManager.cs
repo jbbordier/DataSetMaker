@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -26,6 +27,8 @@ public class GameManager : MonoBehaviour
 
     private GameObject foottL;
     private GameObject foottR;
+
+    public int targetFile;
     private void Awake()
     {
         if (folder != "")
@@ -103,12 +106,20 @@ public class GameManager : MonoBehaviour
     }
 
     [ContextMenu("Rewrite")]
-    public void RewriteAnim()
+    public void RewriteAll()
+    {
+
+        RewriteAnim(targetFile.ToString());
+
+    }
+
+    public void RewriteAnim(string numberFile)
     {
         List<string> olds = new List<string>();
+        MakeClipsLegacy ClipHandler = transform.GetComponent<MakeClipsLegacy>();
 
         string all = "";
-        using (StreamReader reader = new StreamReader("Assets/Results/" + folder + "/datasAnim.txt"))
+        using (StreamReader reader = new StreamReader("Assets/Dataset/datasAnim" + numberFile + ".txt"))
         {
             string content = reader.ReadToEnd();
             all = content;
@@ -116,48 +127,51 @@ public class GameManager : MonoBehaviour
             for (int i = 1; i < splittedContent.Length; i++)
             {
                 string[] split = splittedContent[i].Split("To ");
-                olds.Add(split[1]);
+               /* olds.Add(split[1]);
                 olds.Add(split[2]);
-                olds.Add(split[3]);
+                olds.Add(split[3]);*/
                 olds.Add(split[4]);
             }
         }
-        using (StreamWriter writer = new StreamWriter("Assets/Results/" + folder + " /datasAnim.txt"))
+        using (StreamWriter writer = new StreamWriter("Assets/Dataset/datasAnim" + numberFile + ".txt"))
         {
             int i = 0;
             foreach (var item in animList.clips)
             {
+
+                var old = olds[i].Split("\n");
+                old = old[1].Split(";");
+                ClipHandler.changeLength(item, (old.Count() - 1f) / 60f);
                 ExtractAnimationData(item, to.transform);
                 string localRot = "\nTo animation Local Rotations : ";
                 string GlobalRot = "\n\nTo animation Global Rotations : ";
                 string localPos = "\n\nTo animation Local Positions : ";
                 string GlobalPos = "\n\nTo animation Global Positions : ";
+                /* foreach (var localR in rotLocal)
+                 {
+                     if (localR.Key != "To" && localR.Key != "Eyelashes" && localR.Key != "Body" && localR.Key != "Bottoms" && localR.Key != "Eyes" && localR.Key != "Hair" && localR.Key != "Shoes" && localR.Key != "Tops")
+                     {
+                         localRot += '\n';
+                         localRot += localR.Key + " : " + ListTostring<Quaternion>(localR.Value);
+                     }
 
-                foreach (var localR in rotLocal)
-                {
-                    if (localR.Key != "To" && localR.Key != "Eyelashes" && localR.Key != "Body" && localR.Key != "Bottoms" && localR.Key != "Eyes" && localR.Key != "Hair" && localR.Key != "Shoes" && localR.Key != "Tops")
-                    {
-                        localRot += '\n';
-                        localRot += localR.Key + " : " + ListTostring<Quaternion>(localR.Value);
-                    }
-
-                }
-                foreach (var globalR in rotGlobal)
-                {
-                    if (globalR.Key != "To" && globalR.Key != "Eyelashes" && globalR.Key != "Body" && globalR.Key != "Bottoms" && globalR.Key != "Eyes" && globalR.Key != "Hair" && globalR.Key != "Shoes" && globalR.Key != "Tops")
-                    {
-                        GlobalRot += '\n';
-                        GlobalRot += globalR.Key + " : " + ListTostring<Quaternion>(globalR.Value);
-                    }
-                }
-                foreach (var localP in posLocal)
-                {
-                    if (localP.Key != "To" && localP.Key != "Eyelashes" && localP.Key != "Body" && localP.Key != "Bottoms" && localP.Key != "Eyes" && localP.Key != "Hair" && localP.Key != "Shoes" && localP.Key != "Tops")
-                    {
-                        localPos += '\n';
-                        localPos += localP.Key + " : " + ListTostring<Vector3>(localP.Value);
-                    }
-                }
+                 }
+                 foreach (var globalR in rotGlobal)
+                 {
+                     if (globalR.Key != "To" && globalR.Key != "Eyelashes" && globalR.Key != "Body" && globalR.Key != "Bottoms" && globalR.Key != "Eyes" && globalR.Key != "Hair" && globalR.Key != "Shoes" && globalR.Key != "Tops")
+                     {
+                         GlobalRot += '\n';
+                         GlobalRot += globalR.Key + " : " + ListTostring<Quaternion>(globalR.Value);
+                     }
+                 }
+                 foreach (var localP in posLocal)
+                 {
+                     if (localP.Key != "To" && localP.Key != "Eyelashes" && localP.Key != "Body" && localP.Key != "Bottoms" && localP.Key != "Eyes" && localP.Key != "Hair" && localP.Key != "Shoes" && localP.Key != "Tops")
+                     {
+                         localPos += '\n';
+                         localPos += localP.Key + " : " + ListTostring<Vector3>(localP.Value);
+                     }
+                 }*/
                 foreach (var globalP in posGlobal)
                 {
                     if (globalP.Key != "To" && globalP.Key != "Eyelashes" && globalP.Key != "Body" && globalP.Key != "Bottoms" && globalP.Key != "Eyes" && globalP.Key != "Hair" && globalP.Key != "Shoes" && globalP.Key != "Tops")
@@ -166,12 +180,12 @@ public class GameManager : MonoBehaviour
                         GlobalPos += globalP.Key + " : " + ListTostring<Vector3>(globalP.Value);
                     }
                 }
-
-                all = all.Replace(olds[0 + (i)], localRot);
-                all = all.Replace(olds[1 + (i)], GlobalRot);
-                all = all.Replace(olds[2 + (i)], localPos);
-                all = all.Replace(olds[3 + (i)], GlobalPos);
-                i += 4;
+                /* all = all.Replace(olds[0 + (i)], localRot);
+                 all = all.Replace(olds[1 + (i)], GlobalRot);
+                 all = all.Replace(olds[2 + (i)], localPos);*/
+                all = all.Replace(olds[/*3*/0 + (i)], GlobalPos);
+                //i += 4;
+                i++;
             }
             all = all.Replace(";To ", "");
             writer.Write(all);

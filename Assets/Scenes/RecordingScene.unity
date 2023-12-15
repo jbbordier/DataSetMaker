@@ -730,6 +730,7 @@ MonoBehaviour:
   - {fileID: 1379824499}
   folder: 
   currentToClip: {fileID: 0}
+  targetFile: 24
 --- !u!114 &560663485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -742,7 +743,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9c3fc0b3b600e147a96dad2e5e3810a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clipLength: 3
 --- !u!114 &560663486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -767,6 +767,9 @@ MonoBehaviour:
   origin: {fileID: 0}
   clipOrigin: {fileID: 0}
   rootOrigin: {fileID: 0}
+  GT: {fileID: 0}
+  clipGT: {fileID: 0}
+  rootGT: {fileID: 0}
   transformToApply: 
 --- !u!1 &802802523
 GameObject:
