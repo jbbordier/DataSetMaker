@@ -108,9 +108,10 @@ public class GameManager : MonoBehaviour
     [ContextMenu("Rewrite")]
     public void RewriteAll()
     {
-
-        RewriteAnim(targetFile.ToString());
-
+        for(int i =25;i<27;i++)
+        {
+            RewriteAnim(i.ToString());
+        }
     }
 
     public void RewriteAnim(string numberFile)
@@ -119,21 +120,21 @@ public class GameManager : MonoBehaviour
         MakeClipsLegacy ClipHandler = transform.GetComponent<MakeClipsLegacy>();
 
         string all = "";
-        using (StreamReader reader = new StreamReader("Assets/Dataset/datasAnim" + numberFile + ".txt"))
+        using (StreamReader reader = new StreamReader("Assets/datasAnim" + numberFile + ".txt"))
         {
             string content = reader.ReadToEnd();
             all = content;
             string[] splittedContent = content.Split("Animations :");
             for (int i = 1; i < splittedContent.Length; i++)
             {
-                string[] split = splittedContent[i].Split("To ");
-               /* olds.Add(split[1]);
+                string[] split = splittedContent[i].Split("To animation");
+                olds.Add(split[1]);
                 olds.Add(split[2]);
-                olds.Add(split[3]);*/
+                olds.Add(split[3]);
                 olds.Add(split[4]);
             }
         }
-        using (StreamWriter writer = new StreamWriter("Assets/Dataset/datasAnim" + numberFile + ".txt"))
+        using (StreamWriter writer = new StreamWriter("Assets/datasAnimFixed" + numberFile + ".txt"))
         {
             int i = 0;
             foreach (var item in animList.clips)
@@ -143,10 +144,10 @@ public class GameManager : MonoBehaviour
                 old = old[1].Split(";");
                 ClipHandler.changeLength(item, (old.Count() - 1f) / 60f);
                 ExtractAnimationData(item, to.transform);
-                string localRot = "\nTo animation Local Rotations : ";
-                string GlobalRot = "\n\nTo animation Global Rotations : ";
-                string localPos = "\n\nTo animation Local Positions : ";
-                string GlobalPos = "\n\nTo animation Global Positions : ";
+                //string localRot = "\nTo animation Local Rotations : ";
+                //string GlobalRot = "\n\nTo animation Global Rotations : ";
+                //string localPos = "\n\nTo animation Local Positions : ";
+                string GlobalPos = " Global Positions : ";
                 /* foreach (var localR in rotLocal)
                  {
                      if (localR.Key != "To" && localR.Key != "Eyelashes" && localR.Key != "Body" && localR.Key != "Bottoms" && localR.Key != "Eyes" && localR.Key != "Hair" && localR.Key != "Shoes" && localR.Key != "Tops")
@@ -183,9 +184,10 @@ public class GameManager : MonoBehaviour
                 /* all = all.Replace(olds[0 + (i)], localRot);
                  all = all.Replace(olds[1 + (i)], GlobalRot);
                  all = all.Replace(olds[2 + (i)], localPos);*/
-                all = all.Replace(olds[/*3*/0 + (i)], GlobalPos);
-                //i += 4;
-                i++;
+                GlobalPos = GlobalPos + "\n\n";
+                all = all.Replace(olds[3 + (i)], GlobalPos);
+                i += 4;
+                //i++;
             }
             all = all.Replace(";To ", "");
             writer.Write(all);
